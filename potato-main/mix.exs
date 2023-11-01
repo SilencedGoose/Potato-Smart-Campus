@@ -23,7 +23,11 @@ defmodule Potato.MixProject do
   defp deps do
     [
       # {:observables, git: "https://github.com/m1dnight/observables", branch: "master"}
-      {:creek, path: "../creek"}
+      {:creek, path: "../creek"},
+      {:plug_cowboy, "~> 2.5"},
+      {:jason, "~> 1.0"},
+      {:phoenix, "~> 1.6.16"},
+      {:phoenix_live_view, "~> 0.17.10"}
     ]
   end
 end
