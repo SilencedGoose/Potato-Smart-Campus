@@ -5,6 +5,7 @@ defmodule Server do
   use Potato.DSL
   alias Creek.Source.Subject, as: Subject
   alias Creek.Source, as: Source
+  # Code.require_file("./lib/program/sensor_website.exs")
 
   def init() do
     # Our node descriptor.

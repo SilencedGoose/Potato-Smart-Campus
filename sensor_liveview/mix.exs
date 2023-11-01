@@ -32,7 +32,7 @@ defmodule SensorLiveview.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.7.7"},
+      {:phoenix, "~> 1.6.16"},
       {:phoenix_html, "~> 3.3"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_view, "~> 0.19.0"},
@@ -47,7 +47,7 @@ defmodule SensorLiveview.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:potato, path: "potato-main"}
+      # {:potato, path: "potato-main"}
       # {:potato, git: "https://github.com/softwarelanguageslab/potato.git"}
     ]
   end
