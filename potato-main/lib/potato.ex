@@ -16,7 +16,8 @@ defmodule Potato.Application do
       worker(Potato.Network.Observables, []),
       worker(Potato.Network.Evaluator, []),
       worker(Potato.Network.Meta, []),
-      worker(Potato.Network.Broadcast, [])
+      worker(Potato.Network.Broadcast, []),
+      Repo,
     ]
 
     opts = [strategy: :one_for_one, name: Potato.Supervisor]
