@@ -1,6 +1,6 @@
-# Potato-GU-Security-System
+# Potato Smart Campus
 
-An implementation of the University of Glasgow Security System using the Potato library.
+An implementation of the University of Glasgow Smart Campus using the Potato library for Elixir.
 Made as part of my MSci project.
 
 ## How to run the website
