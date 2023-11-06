@@ -5,10 +5,10 @@ defmodule SmartCampusWeb.SmartCampusLive do
   alias SmartCampus.Measurement
 
   def mount(_params, _session, socket) do
-    if connected?(socket), do: Process.send_after(self(), :update, 1000)
-    socket = assign(socket, temperature: 0, humidity: 0, noise: 0, light: 0, motion: "Active", co2: 0, datetime: "17 Oct 2023 12:00:00")
-    # update_measurement(socket)
-    {:ok, socket}
+    if connected?(socket), do: Process.send_after(self(), :update_measurement, 1000)
+    # SmartCampusWeb.Endpoint.subscribe("new_measurement")
+    IO.inspect(self())
+    {:ok, assign(socket, temperature: 0, humidity: 0, noise: 0, light: 0, motion: "Active", co2: 0, datetime: "17 Oct 2023 12:00:00")}
   end
 
   def render(assigns) do
@@ -26,8 +26,8 @@ defmodule SmartCampusWeb.SmartCampusLive do
     """
   end
 
-  def handle_info(:update, socket) do
-    Process.send_after(self(), :update, 5000)
+  def handle_info(:update_measurement, socket) do
+    Process.send_after(self(), :update_measurement, 5000)
     measurement = Repo.one(from m in Measurement, order_by: [desc: m.inserted_at], limit: 1)
       |> Map.from_struct
       |> Enum.filter(fn {_, v} -> v != nil end)

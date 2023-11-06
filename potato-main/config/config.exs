@@ -30,3 +30,15 @@ config :logger, :console,
 # here (which is why it is important to import them last).
 #
 #     import_config "#{Mix.env}.exs"
+
+config :potato,
+  ecto_repos: [SmartCampus.Repo]
+
+config :potato, Repo,
+  username: "solaris",
+  password: "frog",
+  hostname: "localhost",
+  database: "smart_campus",
+  stacktrace: true,
+  show_sensitive_data_on_connection_error: true,
+  pool_size: 10

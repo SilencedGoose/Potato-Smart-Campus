@@ -22,7 +22,9 @@ defmodule SensorNode do
   end
 
   def read_temperature() do
-    :rand.uniform_real() * 30
+    temp = :rand.uniform_real() * 30
+    Process.sleep(5000)
+    temp
   end
 
 end

@@ -5,7 +5,6 @@ defmodule Server do
   use Potato.DSL
   alias Creek.Source.Subject, as: Subject
   alias Creek.Source, as: Source
-  # Code.require_file("./lib/program/sensor_website.exs")
 
   def init() do
     # Our node descriptor.
@@ -42,19 +41,23 @@ defmodule Server do
     ~> snk
   end
 
-  defdag print_temperature(src, snk) do
+  defdag upload_temperature(src, snk) do
     src
-    ~> average()
-    ~> debug
+    ~> map(fn v -> Repo.insert(%Measurement{temperature: v}) end)
     ~> snk
   end
 
   def run() do
     init()
-    kill_switch = Creek.Source.gatherer()
+    kill_switch = Creek.Sink.ignore(nil)
     temps = Creek.Source.gatherer()
     deploy(stream_temperatures, src: Net.network(), snk: kill_switch, temp_sink: temps)
-    deploy(print_temperature, src: temps, snk: kill_switch)
+    deploy(upload_temperature, src: temps, snk: kill_switch)
     nil
+  end
+
+  def upload_measurements() do
+    IO.inspect("hoii")
+    Repo.insert(%Measurement{temperature: 12.5})
   end
 end
