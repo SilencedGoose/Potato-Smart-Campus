@@ -17,7 +17,8 @@ defmodule Potato.Network.Broadcast do
   alias Potato.Network.Meta
 
   @port 6666
-  @multicast {239, 0, 0, 250}
+  @multicast {224, 0, 0, 251}
+  @ipaddr {192, 168, 0, 82}
 
   def start_link() do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
@@ -32,8 +33,8 @@ defmodule Potato.Network.Broadcast do
       :gen_udp.open(@port, [
         :binary,
         {:reuseaddr, true},
-        {:ip, @multicast},
-        {:multicast_ttl, 4},
+        {:ip, @ipaddr},
+        {:multicast_ttl, 100},
         {:multicast_loop, true},
         {:broadcast, true},
         {:add_membership, {@multicast, {0, 0, 0, 0}}},
