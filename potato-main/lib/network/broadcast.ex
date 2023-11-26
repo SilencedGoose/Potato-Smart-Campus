@@ -37,7 +37,7 @@ defmodule Potato.Network.Broadcast do
         {:multicast_ttl, 100},
         {:multicast_loop, true},
         {:broadcast, true},
-        {:add_membership, {@multicast, {0, 0, 0, 0}}},
+        {:add_membership, {@multicast, @ipaddr}},
         {:active, true}
       ])
 
