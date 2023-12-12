@@ -18,6 +18,7 @@ defmodule Potato.Network.Broadcast do
 
   @port 6666
   @multicast {224, 0, 0, 251}
+  @interface {10, 42, 0, 1}
 
   def start_link() do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
@@ -33,7 +34,7 @@ defmodule Potato.Network.Broadcast do
         :binary,
         {:reuseaddr, true},
         {:ip, @multicast},
-        {:multicast_ttl, 4},
+        {:multicast_ttl, 20},
         {:multicast_loop, true},
         {:broadcast, true},
         {:add_membership, {@multicast, {0, 0, 0, 0}}},
