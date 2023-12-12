@@ -33,11 +33,11 @@ defmodule Potato.Network.Broadcast do
       :gen_udp.open(@port, [
         :binary,
         {:reuseaddr, true},
-        {:ip, @multicast},
+        {:ip, @interface},
         {:multicast_ttl, 20},
         {:multicast_loop, true},
         {:broadcast, true},
-        {:add_membership, {@multicast, {0, 0, 0, 0}}},
+        {:add_membership, {@multicast, @interface}},
         {:active, true}
       ])
 
