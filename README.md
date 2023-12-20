@@ -16,5 +16,5 @@ Made as part of my MSci project.
 2. Run `wsl`
 3. Login to your user account (with root perms) using `su username`, replacing "username" with your username
 4. Run `sudo mix deps.get` to install dependencies
-5. Run `sudo iex --sname bob --cookie "secret" -S mix` and `sudo iex --sname alice --cookie "secret" -S mix` on separate terminals to start the potato program
+5. Run `sudo iex --name bob@ipaddr --cookie "secret" -S mix` and `sudo iex --name alice@ipaddr --cookie "secret" -S mix` on separate terminals to start the potato program - replace "ipaddr" with the ip address of the node
 6. Run `Server.run()` and `SensorNode.run()` on separate terminals to start the server and sensor node nodes
