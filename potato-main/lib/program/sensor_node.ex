@@ -17,6 +17,12 @@ defmodule SensorNode do
     Potato.Network.Meta.set_local_nd(nd)
   end
 
+  defdag stream_temp(src, snk) do
+    src
+    ~> map(fn _ -> SensorNode.read_temperature() end)
+    ~> snk
+  end
+
   def run() do
     init()
   end
