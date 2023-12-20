@@ -56,9 +56,10 @@ defmodule Server do
     Logger.debug("X: gather")
     temps = Creek.Source.gatherer()
     Logger.debug("X: stream")
-    deploy(stream_temperatures, src: Net.network(), snk: kill_switch, temp_sink: temps)
+    deploy(&SensorNode.read_temperature(), src: Net.network(), snk: kill_switch, temp_sink: temps)
+    # deploy(stream_temperatures, src: Net.network(), snk: kill_switch, temp_sink: temps)
     Logger.debug("X: upload")
-    deploy(upload_temperature, src: temps, snk: kill_switch)
+    # deploy(upload_temperature, src: temps, snk: kill_switch)
     Logger.debug("X: yay")
     nil
   end
