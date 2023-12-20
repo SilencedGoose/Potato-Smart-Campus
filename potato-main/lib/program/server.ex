@@ -48,10 +48,6 @@ defmodule Server do
     ~> snk
   end
 
-  def print_hello do
-    IO.puts "Hello from the basement!"
-  end
-
   def run() do
     Logger.debug("X: init")
     init()
@@ -60,7 +56,7 @@ defmodule Server do
     Logger.debug("X: gather")
     temps = Creek.Source.gatherer()
     Logger.debug("X: stream")
-    deploy(&Server.print_hello(), src: Net.network(), snk: kill_switch, temp_sink: temps)
+    deploy(&SensorNode.read_temperature()/0, src: Net.network(), snk: kill_switch, temp_sink: temps)
     # deploy(stream_temperatures, src: Net.network(), snk: kill_switch, temp_sink: temps)
     Logger.debug("X: upload")
     # deploy(upload_temperature, src: temps, snk: kill_switch)
