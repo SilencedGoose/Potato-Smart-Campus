@@ -23,6 +23,12 @@ defmodule SensorNode do
     ~> snk
   end
 
+  defdag upload_temperature(src, snk) do
+    src
+    ~> map(fn v -> Repo.insert(%Measurement{temperature: v}) end)
+    ~> snk
+  end
+
   def run() do
     init()
   end
