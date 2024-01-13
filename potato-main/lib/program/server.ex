@@ -16,7 +16,6 @@ defmodule Server do
     }
 
     Potato.Network.Meta.set_local_nd(nd)
-
   end
 
   defdag stream_temp(src, snk) do
@@ -48,23 +47,12 @@ defmodule Server do
     ~> snk
   end
 
-  def print_hello do
-    IO.puts "Hello from the basement!"
-  end
-
   def run() do
-    Logger.debug("X: init")
     init()
-    Logger.debug("X: kill")
     kill_switch = Creek.Sink.ignore(nil)
-    Logger.debug("X: gather")
     temps = Creek.Source.gatherer()
-    Logger.debug("X: stream")
-    deploy(fn -> IO.puts "Test!" end, src: Net.network(), snk: kill_switch, temp_sink: temps)
-    # deploy(stream_temperatures, src: Net.network(), snk: kill_switch, temp_sink: temps)
-    Logger.debug("X: upload")
-    # deploy(upload_temperature, src: temps, snk: kill_switch)
-    Logger.debug("X: yay")
+    deploy(stream_temperatures, src: Net.network(), snk: kill_switch, temp_sink: temps)
+    deploy(upload_temperature, src: temps, snk: kill_switch)
     nil
   end
 
