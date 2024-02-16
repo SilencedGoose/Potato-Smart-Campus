@@ -25,9 +25,16 @@ defmodule SensorNode do
     {:ok, i2c_pid} = ElixirALE.I2C.start_link("i2c-1", 0x45)
     [{:ok, temp}, {:ok, humidity}] = SHT3x.single_shot_result(i2c_pid, :high, true)
     {:ok, sensor} = BH1750.start_link
-    {:ok, lux} = BH1750.measure(sensor)
+    {:ok, light} = BH1750.measure(sensor)
+    {:ok, ref} = Circuits.SPI.open("spidev0.0", speed_hz: 1200000)
+    {:ok, <<_::size(6), noise::size(10)>>} = Circuits.SPI.transfer(ref, <<0x80, 0x00>>)
+    {:ok, gpio} = Circuits.GPIO.open("GPIO17", :input)
+    motion = Circuits.GPIO.read(gpio)
+    Circuits.GPIO.close(gpio)
+    # {:ok, ref} = Circuits.I2C.open("i2c-1")
+    # co2 = Circuits.I2C.read(ref, 0x5a, 11)
     Process.sleep(5000)
-    %{temperature: temp, humidity: humidity, light: lux}
+    %{temperature: temp, humidity: humidity, light: light, noise: noise, motion: motion}
   end
 
 end
