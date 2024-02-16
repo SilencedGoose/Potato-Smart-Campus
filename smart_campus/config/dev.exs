@@ -4,7 +4,7 @@ import Config
 config :smart_campus, SmartCampus.Repo,
   username: "solaris",
   password: "frog",
-  hostname: "192.168.0.51",
+  hostname: "192.168.0.76",
   database: "smart_campus",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,

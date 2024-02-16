@@ -21,10 +21,13 @@ defmodule SensorNode do
     init()
   end
 
-  def read_temperature() do
-    temp = :rand.uniform_real() * 30
+  def read_measurement() do
+    {:ok, i2c_pid} = ElixirALE.I2C.start_link("i2c-1", 0x45)
+    [{:ok, temp}, {:ok, humidity}] = SHT3x.single_shot_result(i2c_pid, :high, true)
+    {:ok, sensor} = BH1750.start_link
+    {:ok, lux} = BH1750.measure(sensor)
     Process.sleep(5000)
-    temp
+    %{temperature: temp, humidity: humidity, light: lux}
   end
 
 end

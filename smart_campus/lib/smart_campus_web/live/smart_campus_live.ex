@@ -13,14 +13,13 @@ defmodule SmartCampusWeb.SmartCampusLive do
 
   def render(assigns) do
     ~H"""
-    <h1>Sensor Outputs:</h1>
     <div id="outputs">
-      <p><b>Temperature:</b> <%= @temperature %>°C</p>
-      <p><b>Humidity:</b> <%= @humidity %>g/m³</p>
-      <p><b>Noise:</b> <%= @noise %> dB</p>
-      <p><b>Light:</b> <%= @light %> lumens</p>
+      <p><b>Temperature:</b> <%= @temperature %></p>
+      <p><b>Humidity:</b> <%= @humidity %></p>
+      <p><b>Noise:</b> <%= @noise %></p>
+      <p><b>Light:</b> <%= @light %></p>
       <p><b>Motion:</b> <%= @motion %></p>
-      <p><b>CO²:</b> <%= @co2 %>ppm</p>
+      <p><b>CO²:</b> <%= @co2 %></p>
       <p><b>Timestamp:</b> <%= @datetime %></p>
     </div>
     """
