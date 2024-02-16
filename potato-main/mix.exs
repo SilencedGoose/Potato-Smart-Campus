@@ -26,6 +26,10 @@ defmodule Potato.MixProject do
       {:creek, path: "../creek"},
       {:ecto_sql, "~> 3.6"},
       {:postgrex, ">= 0.0.0"},
+      {:sht3x, "~> 0.1.0"},
+      {:bh1750, "~> 0.2"},
+      {:circuits_spi, "~> 2.0"},
+      {:circuits_gpio, "~> 2.0"}
       # {:plug_cowboy, "~> 2.5"},
       # {:jason, "~> 1.0"},
       # {:phoenix, "~> 1.6.16"},

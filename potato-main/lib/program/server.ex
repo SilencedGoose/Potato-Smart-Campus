@@ -18,13 +18,13 @@ defmodule Server do
     Potato.Network.Meta.set_local_nd(nd)
   end
 
-  defdag stream_temp(src, snk) do
+  defdag read_measurement(src, snk) do
     src
-    ~> map(fn _ -> SensorNode.read_temperature() end)
+    ~> map(fn _ -> SensorNode.read_measurement() end)
     ~> snk
   end
 
-  defdag stream_temperatures(src, snk, temp_sink) do
+  defdag stream_measurements(src, snk, measurement_sink) do
     src
     ~> filter(fn event ->
       Kernel.match?({:join, _}, event)
@@ -33,7 +33,7 @@ defmodule Server do
       IO.inspect device, label: "device"
         p =
           program do
-          deploy(stream_temp, src: Creek.Source.range(1, :inifinity, 0, 1000), snk: temp_sink)
+          deploy(read_measurement, src: Creek.Source.range(1, :inifinity, 0, 1000), snk: measurement_sink)
           end
 
         Subject.next(device.deploy, p)
@@ -41,23 +41,18 @@ defmodule Server do
     ~> snk
   end
 
-  defdag upload_temperature(src, snk) do
+  defdag upload_measurement(src, snk) do
     src
-    ~> map(fn v -> Repo.insert(%Measurement{temperature: v}) end)
+    ~> map(fn v -> Repo.insert(%Measurement{temperature: v.temperature, humidity: v.humidity, light: v.light}) end)
     ~> snk
   end
 
   def run() do
     init()
     kill_switch = Creek.Sink.ignore(nil)
-    temps = Creek.Source.gatherer()
-    deploy(stream_temperatures, src: Net.network(), snk: kill_switch, temp_sink: temps)
-    deploy(upload_temperature, src: temps, snk: kill_switch)
+    measurements = Creek.Source.gatherer()
+    deploy(stream_measurements, src: Net.network(), snk: kill_switch, measurement_sink: measurements)
+    deploy(upload_measurement, src: measurements, snk: kill_switch)
     nil
-  end
-
-  def upload_measurements() do
-    IO.inspect("hoii")
-    Repo.insert(%Measurement{temperature: 12.5})
   end
 end
