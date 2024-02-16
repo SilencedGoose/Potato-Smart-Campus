@@ -31,10 +31,10 @@ defmodule SensorNode do
     {:ok, gpio} = Circuits.GPIO.open("GPIO17", :input)
     motion = Circuits.GPIO.read(gpio)
     Circuits.GPIO.close(gpio)
-    # {:ok, ref} = Circuits.I2C.open("i2c-1")
-    # co2 = Circuits.I2C.read(ref, 0x5a, 11)
+    {:ok, ref} = Circuits.I2C.open("i2c-1")
+    co2 = Circuits.I2C.read(ref, 0x5a, 11)
     Process.sleep(5000)
-    %{temperature: Float.ceil(temp, 1), humidity: Float.ceil(humidity, 1), light: Float.ceil(light, 1), noise: noise, motion: (fn v -> if v == 0, do: false, else: true end).(motion)}
+    %{temperature: Float.ceil(temp, 1), humidity: Float.ceil(humidity, 1), light: Float.ceil(light, 1), noise: noise, motion: (fn v -> if v == 0, do: false, else: true end).(motion), co2: co2}
   end
 
 end
