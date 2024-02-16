@@ -43,7 +43,7 @@ defmodule Server do
 
   defdag upload_measurement(src, snk) do
     src
-    ~> map(fn v -> Repo.insert(%Measurement{temperature: v.temperature, humidity: v.humidity, light: v.light}) end)
+    ~> map(fn v -> Repo.insert(%Measurement{temperature: v.temperature, humidity: v.humidity, light: v.light, motion: v.motion, noise: v.noise}) end)
     ~> snk
   end
 
