@@ -1,7 +1,5 @@
 # Potato
 
-**TODO: Add description**
-
 ## Running a Potato Node
 
 To start up a Potato node you need to start the project with a name and a cookie.
