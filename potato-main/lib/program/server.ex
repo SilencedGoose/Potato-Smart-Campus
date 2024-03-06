@@ -47,6 +47,12 @@ defmodule Server do
     ~> snk                                                                                                  //CO
   end
 
+  # src
+  #   ~> map(fn v -> Repo.insert(%Status{node_id: self, sensor_failure: v.sensor_failure})
+  #   Repo.insert(%Measurement{temperature: v.temperature, humidity: v.humidity, light: v.light, motion: v.motion, noise: v.noise, co2: v.co2})
+  #   end)
+  #   ~> snk
+
   def run() do
     init()                                                                                                  //CO
     kill_switch = Creek.Sink.ignore(nil)                                                                    //CO
