@@ -8,10 +8,10 @@ defmodule SmartCampusWeb.SmartCampusLive do
     if connected?(socket), do: Process.send_after(self(), :update_measurement, 1000)            //WI
     # SmartCampusWeb.Endpoint.subscribe("new_measurement")
     IO.inspect(self())                                                                          //WI
-    {:ok, assign(socket, temperature: 0, humidity: 0, noise: 0, light: 0, motion: "Active", co2: 0, datetime: "17 Oct 2023 12:00:00")}                                                                            //WI
+    {:ok, assign(socket, temperature: 0, humidity: 0, noise: 0, light: 0, motion: "Active", co2: 0, datetime: "17 Oct 2023 12:00:00", hardware_status: "Working", sensor_node_status: "Working", sensor_status: "Working", sensor_data_status: "Received")}                                                            //WI
   end
 
-  def render(assigns) do                                                                        //WI "lines: 11"
+  def render(assigns) do                                                                        //WI "lines: 18"
     ~H"""
     <div id="outputs">
       <p><b>Temperature:</b> <%= @temperature %></p>
@@ -21,6 +21,13 @@ defmodule SmartCampusWeb.SmartCampusLive do
       <p><b>Motion:</b> <%= @motion %></p>
       <p><b>CO²:</b> <%= @co2 %></p>
       <p><b>Timestamp:</b> <%= @datetime %></p>
+    </div>
+    <div id="Statuses">
+    <h1>Statuses</h1>
+    <p><b>Hardware:</b> <%= @hardware_status %></p>
+    <p><b>Sensor Node:</b> <%= @sensor_node_status %></p>
+    <p><b>Sensors:</b> <%= @sensor_status %></p>
+    <p><b>Sensor Data:</b> <%= @sensor_data_status %></p>
     </div>
     """
   end
