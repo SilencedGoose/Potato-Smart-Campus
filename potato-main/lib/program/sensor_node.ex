@@ -28,7 +28,9 @@ defmodule SensorNode do
     # m = case ElixirALE.I2C.start_link("i2c-1", 0x45) do
     m = case result do
       {:ok, i2c_pid} ->
-        case SHT3x.single_shot_result(i2c_pid, :high, true) do
+        result = SHT3x.single_shot_result(i2c_pid, :high, true)
+        IO.inspect(result)
+        case result do
         [{:ok, temp}, {:ok, humidity}] -> Map.merge(m, %{humidity: Float.ceil(humidity, 1), temperature: Float.ceil(temp, 1)})
         _ -> Map.put(m, :sensor_failure, true)
       end
