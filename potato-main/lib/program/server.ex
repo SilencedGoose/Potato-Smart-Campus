@@ -41,17 +41,18 @@ defmodule Server do
     ~> snk                                                                                                  //CO
   end
 
+  # defdag upload_measurement(src, snk) do
+  #   src
+  #   ~> map(fn v -> Repo.insert(%Status{node_id: self, sensor_failure: v.sensor_failure})
+  #   Repo.insert(%Measurement{temperature: v.temperature, humidity: v.humidity, light: v.light, motion: v.motion, noise: v.noise, co2: v.co2})
+  #   end)
+  #   ~> snk
+  # end
   defdag upload_measurement(src, snk) do
     src                                                                                                     //CO
     ~> map(fn v -> Repo.insert(%Measurement{temperature: v.temperature, humidity: v.humidity, light: v.light, motion: v.motion, noise: v.noise, co2: v.co2}) end)                                                               //DI
     ~> snk                                                                                                  //CO
   end
-
-  # src
-  #   ~> map(fn v -> Repo.insert(%Status{node_id: self, sensor_failure: v.sensor_failure})
-  #   Repo.insert(%Measurement{temperature: v.temperature, humidity: v.humidity, light: v.light, motion: v.motion, noise: v.noise, co2: v.co2})
-  #   end)
-  #   ~> snk
 
   def run() do
     init()                                                                                                  //CO
