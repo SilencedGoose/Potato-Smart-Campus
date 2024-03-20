@@ -23,24 +23,23 @@ defmodule SensorNode do
 
   def read_measurement() do
     m = %{temperature: nil, humidity: nil, light: nil, noise: nil, motion: nil, co2: nil, sensor_failure: false}
-    result = ElixirALE.I2C.start_link("i2c-1", 0x45)
-    IO.inspect(result)
     # m = case ElixirALE.I2C.start_link("i2c-1", 0x45) do
-    m = case result do
-      {:ok, i2c_pid} ->
-        IO.inspect(i2c_pid, label: "i2c_pid")
-        result = SHT3x.single_shot_result(i2c_pid, :high, true)
-        IO.inspect(result)
-        case result do
-        [{:ok, temp}, {:ok, humidity}] -> Map.merge(m, %{humidity: Float.ceil(humidity, 1), temperature: Float.ceil(temp, 1)})
-        _ -> Map.put(m, :sensor_failure, true)
-      end
+    #   {:ok, i2c_pid} ->
+    #     case SHT3x.single_shot_result(i2c_pid, :high, true) do
+    #     [{:ok, temp}, {:ok, humidity}] -> Map.merge(m, %{humidity: Float.ceil(humidity, 1), temperature: Float.ceil(temp, 1)})
+    #     _ -> Map.put(m, :sensor_failure, true)
+    #   end
+    #   _ -> Map.put(m, :sensor_failure, true)
+    # end
+
+    m = case BH1750.start_link do
+      {:ok, sensor} -> 
+        case BH1750.measure(sensor) do
+          {:ok, light} -> Map.put(m, :light, Float.ceil(light, 1))
+          _ -> Map.put(m, :sensor_failure, true)
+        end
       _ -> Map.put(m, :sensor_failure, true)
     end
-
-
-    {:ok, sensor} = BH1750.start_link                                                   #SI
-    {:ok, light} = BH1750.measure(sensor)                                               #SI
     {:ok, ref} = Circuits.SPI.open("spidev0.0", speed_hz: 1200000)                      #SI
     {:ok, <<_::size(6), noise::size(10)>>} = Circuits.SPI.transfer(ref, <<0x80, 0x00>>) #SI
     {:ok, gpio} = Circuits.GPIO.open("GPIO17", :input)                                  #SI
