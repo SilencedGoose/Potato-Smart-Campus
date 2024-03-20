@@ -28,6 +28,7 @@ defmodule SensorNode do
     # m = case ElixirALE.I2C.start_link("i2c-1", 0x45) do
     m = case result do
       {:ok, i2c_pid} ->
+        IO.inspect(i2c_pid, label: "i2c_pid")
         result = SHT3x.single_shot_result(i2c_pid, :high, true)
         IO.inspect(result)
         case result do
