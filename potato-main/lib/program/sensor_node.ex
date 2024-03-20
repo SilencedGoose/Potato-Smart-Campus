@@ -23,12 +23,12 @@ defmodule SensorNode do
 
   def read_measurement() do
     m = %{temperature: nil, humidity: nil, light: nil, noise: nil, motion: nil, co2: nil, sensor_failure: false}
-    case ElixirALE.I2C.start_link("i2c-1", 0x45) do
+    m = case ElixirALE.I2C.start_link("i2c-1", 0x45) do
       {:ok, i2c_pid} -> case SHT3x.single_shot_result(i2c_pid, :high, true) do
-        [{:ok, temp}, {:ok, humidity}] -> m = Map.merge(m, %{humidity: Float.ceil(humidity, 1), temperature: Float.ceil(temp, 1)})
-        {:error, _} -> m = %{m | sensor_failure: true}
+        [{:ok, temp}, {:ok, humidity}] -> Map.merge(m, %{humidity: Float.ceil(humidity, 1), temperature: Float.ceil(temp, 1)})
+        {:error, _} -> %{m | sensor_failure: true}
       end
-      {:error, _} -> m = %{m | sensor_failure: true}
+      {:error, _} -> %{m | sensor_failure: true}
     end
 
 
