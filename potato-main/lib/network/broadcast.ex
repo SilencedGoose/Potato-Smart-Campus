@@ -86,13 +86,13 @@ defmodule Potato.Network.Broadcast do
 
   defp handle_disconnect(remote) do
     Logger.debug("LOST: #{inspect(remote)}")
-    Repo.insert(%Status{node_id: inspect(remote), pi: false})
+    # Repo.insert(%Status{node_id: inspect(remote), pi: false})
     Potato.PubSub.call_all(:discover, {:lost, remote})
   end
 
   defp handle_connect(remote) do
     Logger.debug("DISCOVER: #{inspect(remote)}")
-    Repo.insert(%Status{node_id: inspect(remote), pi: false})
+    # Repo.insert(%Status{node_id: inspect(remote), pi: false})
     Potato.PubSub.call_all(:discover, {:found, remote})
   end
 

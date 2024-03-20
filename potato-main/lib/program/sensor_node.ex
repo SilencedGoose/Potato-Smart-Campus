@@ -34,7 +34,7 @@ defmodule SensorNode do
     {:ok, ref} = Circuits.I2C.open("i2c-1")                                             //SI
     co2 = Circuits.I2C.read(ref, 0x5a, 11)                                              //SI
     Process.sleep(5000)                                                                 //SN
-    %{temperature: Float.ceil(temp, 1), humidity: Float.ceil(humidity, 1), light: Float.ceil(light, 1), noise: noise, motion: (fn v -> if v == 0, do: false, else: true end).(motion), co2: co2}          //CO
+    %{temperature: Float.ceil(temp, 1), humidity: Float.ceil(humidity, 1), light: Float.ceil(light, 1), noise: noise, motion: (fn v -> if v == 0, do: false, else: true end).(motion), co2: co2, sensor_failure: failure}          //CO
   end
 
 end
