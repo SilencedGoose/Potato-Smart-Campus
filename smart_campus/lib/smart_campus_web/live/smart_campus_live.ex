@@ -24,9 +24,9 @@ defmodule SmartCampusWeb.SmartCampusLive do
     </div>
     <div id="Statuses">
     <h1>Statuses</h1>
-    <p><b>Hardware:</b> <%= @hardware_status %></p>
-    <p><b>Sensor Node:</b> <%= @sensor_node_status %></p>
-    <p><b>Sensors:</b> <%= @sensor_status %></p>
+    <p><b>Sensor Node Hardware:</b> <%= @hardware_status %></p>
+    <p><b>Sensor Node Software:</b> <%= @sensor_node_status %></p>
+    <p><b>Attached Sensors:</b> <%= @sensor_status %></p>
     <p><b>Sensor Data:</b> <%= @sensor_data_status %></p>
     </div>
     """
