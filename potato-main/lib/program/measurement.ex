@@ -1,4 +1,3 @@
-
 # this is a copy of the same file in the webserver
 defmodule Measurement do
   use Ecto.Schema
@@ -19,7 +18,6 @@ defmodule Measurement do
   def changeset(measurement, attrs) do
     measurement
     |> cast(attrs, [:temperature, :humidity, :noise, :light, :motion, :co2])
-    # |> validate_required([:temperature, :humidity, :noise, :light, :motion, :co2])
     |> validate_required([])
   end
 end

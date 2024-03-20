@@ -29,7 +29,7 @@ defmodule SensorNode do
         [{:ok, temp}, {:ok, humidity}] -> Map.merge(m, %{humidity: Float.ceil(humidity, 1), temperature: Float.ceil(temp, 1)})
         _ -> %{m | sensor_failure: true}
       end
-      {:error, _} -> %{m | sensor_failure: true}
+      _ -> %{m | sensor_failure: true}
     end
 
 
