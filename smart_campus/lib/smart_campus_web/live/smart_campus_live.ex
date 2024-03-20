@@ -5,13 +5,13 @@ defmodule SmartCampusWeb.SmartCampusLive do
   alias SmartCampus.Measurement
 
   def mount(_params, _session, socket) do
-    if connected?(socket), do: Process.send_after(self(), :update_measurement, 1000)
+    if connected?(socket), do: Process.send_after(self(), :update_measurement, 1000)            //WI
     # SmartCampusWeb.Endpoint.subscribe("new_measurement")
-    IO.inspect(self())
-    {:ok, assign(socket, temperature: 0, humidity: 0, noise: 0, light: 0, motion: "Active", co2: 0, datetime: "17 Oct 2023 12:00:00")}
+    IO.inspect(self())                                                                          //WI
+    {:ok, assign(socket, temperature: 0, humidity: 0, noise: 0, light: 0, motion: "Active", co2: 0, datetime: "17 Oct 2023 12:00:00")}                                                                            //WI
   end
 
-  def render(assigns) do
+  def render(assigns) do                                                                        //WI "lines: 11"
     ~H"""
     <div id="outputs">
       <p><b>Temperature:</b> <%= @temperature %></p>
@@ -26,14 +26,14 @@ defmodule SmartCampusWeb.SmartCampusLive do
   end
 
   def handle_info(:update_measurement, socket) do
-    Process.send_after(self(), :update_measurement, 5000)
-    measurement = Repo.one(from m in Measurement, order_by: [desc: m.inserted_at], limit: 1)
-      |> Map.from_struct
-      |> Enum.filter(fn {_, v} -> v != nil end)
-      |> Enum.into(%{})
-    measurement = Map.put(measurement, :datetime, measurement.inserted_at)
-    measurement = Map.drop(measurement, [:__meta__, :updated_at, :id, :inserted_at])
+    Process.send_after(self(), :update_measurement, 5000)                                       //WI
+    measurement = Repo.one(from m in Measurement, order_by: [desc: m.inserted_at], limit: 1)    //DI
+      |> Map.from_struct                                                                        //WI
+      |> Enum.filter(fn {_, v} -> v != nil end)                                                 //WI
+      |> Enum.into(%{})                                                                         //WI
+    measurement = Map.put(measurement, :datetime, measurement.inserted_at)                      //WI
+    measurement = Map.drop(measurement, [:__meta__, :updated_at, :id, :inserted_at])            //WI
 
-    {:noreply, assign(socket, measurement)}
+    {:noreply, assign(socket, measurement)}                                                     //WI
   end
 end
