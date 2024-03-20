@@ -27,9 +27,9 @@ defmodule SensorNode do
       {:ok, i2c_pid} ->
         case SHT3x.single_shot_result(i2c_pid, :high, true) do
         [{:ok, temp}, {:ok, humidity}] -> Map.merge(m, %{humidity: Float.ceil(humidity, 1), temperature: Float.ceil(temp, 1)})
-        _ -> %{m | sensor_failure: true}
+        _ -> Map.put(m, :sensor_failure, true)
       end
-      _ -> %{m | sensor_failure: true}
+      _ -> Map.put(m, :sensor_failure, true)
     end
 
 
