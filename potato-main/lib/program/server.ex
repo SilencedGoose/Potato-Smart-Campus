@@ -48,7 +48,7 @@ defmodule Server do
       # updating Status table
       Ecto.Query.from(s in Status, where: s.node_id == ^to_string(node), select: s)
         |> Repo.update_all(set: [updated_at: DateTime.utc_now(),
-          sensor_status: (fn x -> if x, do: "Broken", else: "Working" end).(v.sensor_failure)])
+          sensor_status: (fn x -> if x == true, do: "Broken", else: "Working" end).(v.sensor_failure)])
       # updating Measurements table
       Repo.insert(%Measurement{temperature: v.temperature, humidity: v.humidity, light: v.light, motion: v.motion, noise: v.noise, co2: v.co2})
     end)
