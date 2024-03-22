@@ -5,6 +5,7 @@ defmodule Server do
   use Potato.DSL
   alias Creek.Source.Subject, as: Subject
   alias Creek.Source, as: Source
+  import Ecto.Query, only: [from: 2]
 
   def init() do
     # Our node descriptor.
@@ -44,18 +45,15 @@ defmodule Server do
   defdag upload_measurement(src, snk) do
     src
     ~> map(fn v ->
-      IO.inspect(v.sensor_failure)
-      IO.inspect(to_string(node))
-      Repo.insert(%Status{node_id: to_string(node), sensor_status: (fn x -> if x, do: "Broken", else: "Working" end).(v.sensor_failure)})
+      # updating Status table
+      Ecto.Query.from(s in Status, where: s.node_id == ^to_string(node), select: s)
+        |> Repo.update_all(set: [updated_at: DateTime.utc_now(),
+          sensor_status: (fn x -> if x, do: "Broken", else: "Working" end).(v.sensor_failure)])
+      # updating Measurements table
       Repo.insert(%Measurement{temperature: v.temperature, humidity: v.humidity, light: v.light, motion: v.motion, noise: v.noise, co2: v.co2})
     end)
     ~> snk
   end
-  # defdag upload_measurement(src, snk) do
-  #   src                                                                                                     #CO
-  #   ~> map(fn v -> Repo.insert(%Measurement{temperature: v.temperature, humidity: v.humidity, light: v.light, motion: v.motion, noise: v.noise, co2: v.co2}) end)                                                               #DI
-  #   ~> snk                                                                                                  #CO
-  # end
 
   def run() do
     init()                                                                                                  #CO
