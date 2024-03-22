@@ -22,7 +22,7 @@ defmodule SensorNode do
   end
 
   def read_measurement() do
-    m = %{temperature: nil, humidity: nil, light: nil, noise: nil, motion: nil, co2: nil, sensor_failure: false}
+    m = %{temperature: nil, humidity: nil, light: nil, noise: nil, motion: nil, co2: nil, sensor_failure: false, node_id: to_string(node)}
     # m = case ElixirALE.I2C.start_link("i2c-1", 0x45) do
     #   {:ok, i2c_pid} ->
     #     case SHT3x.single_shot_result(i2c_pid, :high, true) do

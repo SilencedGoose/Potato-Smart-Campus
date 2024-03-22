@@ -92,7 +92,7 @@ defmodule Potato.Network.Broadcast do
 
   defp handle_connect(remote) do
     Logger.debug("DISCOVER: #{inspect(remote)}")
-    # Repo.insert(%Status{node_id: inspect(remote), pi: false})   #SNH
+    # Repo.insert(%Status{node_id: to_string(remote), sensor_node_hardware_status: "Working", sensor_node_software_status: "Working", sensor_status: "Working"})  #SNH
     Potato.PubSub.call_all(:discover, {:found, remote})
   end
 
