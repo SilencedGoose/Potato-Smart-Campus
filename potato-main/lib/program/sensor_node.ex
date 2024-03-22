@@ -31,17 +31,19 @@ defmodule SensorNode do
     #   end
     #   _ -> Map.put(m, :sensor_failure, true)
     # end
-    
+
     # {:ok, i2c_pid} = ElixirALE.I2C.start_link("i2c-1", 0x45)
     # [{:ok, temp}, {:ok, humidity}] = SHT3x.single_shot_result(i2c_pid, :high, true)
-    m = case BH1750.start_link do
-      {:ok, sensor} -> 
-        case BH1750.measure(sensor) do
-          {:ok, light} -> Map.put(m, :light, Float.ceil(light, 1))
-          _ -> Map.put(m, :sensor_failure, true)
-        end
-      _ -> Map.put(m, :sensor_failure, true)
-    end
+    {:ok, sensor} = BH1750.start_link
+    {:ok, light} = BH1750.measure(sensor)
+    # m = case BH1750.start_link do
+    #   {:ok, sensor} -> 
+    #     case BH1750.measure(sensor) do
+    #       {:ok, light} -> Map.put(m, :light, Float.ceil(light, 1))
+    #       _ -> Map.put(m, :sensor_failure, true)
+    #     end
+    #   _ -> Map.put(m, :sensor_failure, true)
+    # end
     {:ok, ref} = Circuits.SPI.open("spidev0.0", speed_hz: 1200000)                      #SI
     {:ok, <<_::size(6), noise::size(10)>>} = Circuits.SPI.transfer(ref, <<0x80, 0x00>>) #SI
     {:ok, gpio} = Circuits.GPIO.open("GPIO17", :input)                                  #SI
