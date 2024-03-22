@@ -46,9 +46,7 @@ defmodule Server do
     src
     ~> map(fn v ->
       # updating Status table
-      IO.inspect(v.sensor_failure)
-      IO.inspect((fn x -> if x == true, do: "Broken", else: "Working" end).(v.sensor_failure))
-      Ecto.Query.from(s in Status, where: s.node_id == ^to_string(node), select: s)
+      Ecto.Query.from(s in Status, where: s.node_id == ^v.node_id, select: s)
         |> Repo.update_all(set: [updated_at: DateTime.utc_now(),
           sensor_status: (fn x -> if x == true, do: "Broken", else: "Working" end).(v.sensor_failure)])
       # updating Measurements table
