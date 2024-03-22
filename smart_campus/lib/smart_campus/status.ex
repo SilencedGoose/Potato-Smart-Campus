@@ -3,14 +3,10 @@ defmodule SmartCampus.Status do
   import Ecto.Changeset
 
   schema "statuses" do
-    field :co2, :boolean, default: false
-    field :humidity, :boolean, default: false
-    field :light, :boolean, default: false
-    field :motion, :boolean, default: false
     field :node_id, :string
-    field :noise, :boolean, default: false
-    field :pi, :boolean, default: false
-    field :temperature, :boolean, default: false
+    field :sensor_node_hardware_status, :string
+    field :sensor_node_software_status, :string
+    field :sensor_status, :string
 
     timestamps()
   end
@@ -18,7 +14,7 @@ defmodule SmartCampus.Status do
   @doc false
   def changeset(status, attrs) do
     status
-    |> cast(attrs, [:pi, :temperature, :humidity, :noise, :light, :motion, :co2, :node_id])
-    |> validate_required([:pi, :temperature, :humidity, :noise, :light, :motion, :co2, :node_id])
+    |> cast(attrs, [:node_id, :sensor_status, :sensor_node_hardware_status, :sensor_node_software_status])
+    |> validate_required([:node_id, :sensor_status, :sensor_node_hardware_status, :sensor_node_software_status])
   end
 end
