@@ -31,8 +31,9 @@ defmodule SensorNode do
     #   end
     #   _ -> Map.put(m, :sensor_failure, true)
     # end
-    {:ok, i2c_pid} = ElixirALE.I2C.start_link("i2c-1", 0x45)
-    [{:ok, temp}, {:ok, humidity}] = SHT3x.single_shot_result(i2c_pid, :high, true)
+    
+    # {:ok, i2c_pid} = ElixirALE.I2C.start_link("i2c-1", 0x45)
+    # [{:ok, temp}, {:ok, humidity}] = SHT3x.single_shot_result(i2c_pid, :high, true)
     m = case BH1750.start_link do
       {:ok, sensor} -> 
         case BH1750.measure(sensor) do
