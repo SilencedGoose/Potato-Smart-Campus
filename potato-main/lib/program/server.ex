@@ -45,7 +45,8 @@ defmodule Server do
     src
     ~> map(fn v ->
       IO.inspect(v.sensor_failure)
-      Repo.insert(%Status{node_id: self, sensor_status: (fn x -> if x, do: "Broken", else: "Working" end).(v.sensor_failure)})
+      IO.inspect(to_string(node))
+      Repo.insert(%Status{node_id: to_string(node), sensor_status: (fn x -> if x, do: "Broken", else: "Working" end).(v.sensor_failure)})
       Repo.insert(%Measurement{temperature: v.temperature, humidity: v.humidity, light: v.light, motion: v.motion, noise: v.noise, co2: v.co2})
     end)
     ~> snk
