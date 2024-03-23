@@ -68,7 +68,6 @@ defmodule SensorNode do
           co2 -> Map.put(m, :co2, co2)
           _ -> Map.put(m, :sensor_failure, true)
         end
-        Circuits.GPIO.close(gpio)
       _ -> Map.put(m, :sensor_failure, true)
     end
 
