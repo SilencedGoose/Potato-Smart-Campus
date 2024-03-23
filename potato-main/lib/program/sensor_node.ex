@@ -55,8 +55,8 @@ defmodule SensorNode do
     m = case Circuits.GPIO.open("GPIO17", :input) do
       {:ok, gpio} ->
         case Circuits.GPIO.read(gpio) do
-          motion -> Map.put(m, :motion, (fn v -> if v == 0, do: false, else: true end).(motion))
-            Circuits.GPIO.close(gpio)
+          motion -> Circuits.GPIO.close(gpio)
+            Map.put(m, :motion, (fn v -> if v == 0, do: false, else: true end).(motion))
           _ -> Map.put(m, :sensor_failure, true)
         end
         
