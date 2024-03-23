@@ -56,9 +56,10 @@ defmodule SensorNode do
       {:ok, gpio} ->
         case Circuits.GPIO.read(gpio) do
           motion -> Map.put(m, :motion, (fn v -> if v == 0, do: false, else: true end).(motion))
+            Circuits.GPIO.close(gpio)
           _ -> Map.put(m, :sensor_failure, true)
         end
-        Circuits.GPIO.close(gpio)
+        
       _ -> Map.put(m, :sensor_failure, true)
     end
     # co2 sensor
