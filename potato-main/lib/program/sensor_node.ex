@@ -23,17 +23,17 @@ defmodule SensorNode do
 
   def read_measurement() do
     m = %{temperature: nil, humidity: nil, light: nil, noise: nil, motion: nil, co2: nil, sensor_failure: false, node_id: to_string(node)}
-    # m = case ElixirALE.I2C.start_link("i2c-1", 0x45) do
-    #   {:ok, i2c_pid} ->
-    #     case SHT3x.single_shot_result(i2c_pid, :high, true) do
-    #     [{:ok, temp}, {:ok, humidity}] -> Map.merge(m, %{humidity: Float.ceil(humidity, 1), temperature: Float.ceil(temp, 1)})
-    #     _ -> Map.put(m, :sensor_failure, true)
-    #   end
-    #   _ -> Map.put(m, :sensor_failure, true)
-    # end
 
-    # {:ok, i2c_pid} = ElixirALE.I2C.start_link("i2c-1", 0x45)
-    # [{:ok, temp}, {:ok, humidity}] = SHT3x.single_shot_result(i2c_pid, :high, true)
+    # temperature/humidity sensor
+    m = case ElixirALE.I2C.start_link("i2c-1", 0x45) do
+      {:ok, i2c_pid} ->
+        case SHT3x.single_shot_result(i2c_pid, :high, true) do
+        [{:ok, temp}, {:ok, humidity}] -> Map.merge(m, %{humidity: Float.ceil(humidity, 1), temperature: Float.ceil(temp, 1)})
+        _ -> Map.put(m, :sensor_failure, true)
+      end
+      _ -> Map.put(m, :sensor_failure, true)
+    end
+    # light sensor
     m = case BH1750.start_link do
       {:ok, sensor} -> 
         case BH1750.measure(sensor) do
@@ -42,15 +42,37 @@ defmodule SensorNode do
         end
       _ -> Map.put(m, :sensor_failure, true)
     end
-    {:ok, ref} = Circuits.SPI.open("spidev0.0", speed_hz: 1200000)                      #SI
-    {:ok, <<_::size(6), noise::size(10)>>} = Circuits.SPI.transfer(ref, <<0x80, 0x00>>) #SI
-    {:ok, gpio} = Circuits.GPIO.open("GPIO17", :input)                                  #SI
-    motion = Circuits.GPIO.read(gpio)                                                   #SI
-    Circuits.GPIO.close(gpio)                                                           #SI
-    {:ok, ref} = Circuits.I2C.open("i2c-1")                                             #SI
-    co2 = Circuits.I2C.read(ref, 0x5a, 11)                                              #SI
+    # noise sensor
+    m = case Circuits.SPI.open("spidev0.0", speed_hz: 1200000) do
+      {:ok, ref} ->
+        case Circuits.SPI.transfer(ref, <<0x80, 0x00>>) do
+          {:ok, <<_::size(6), noise::size(10)>>} -> Map.put(m, :noise, noise)
+          _ -> Map.put(m, :sensor_failure, true)
+        end
+      _ -> Map.put(m, :sensor_failure, true)
+    end
+    # motion sensor
+    m = case Circuits.GPIO.open("GPIO17", :input) do
+      {:ok, gpio} ->
+        case Circuits.GPIO.read(gpio) do
+          motion -> Map.put(m, :motion, (fn v -> if v == 0, do: false, else: true end).(motion))
+          _ -> Map.put(m, :sensor_failure, true)
+        end
+        Circuits.GPIO.close(gpio)
+      _ -> Map.put(m, :sensor_failure, true)
+    end
+    # co2 sensor
+    m = case Circuits.I2C.open("i2c-1") do
+      {:ok, ref} ->
+        case Circuits.I2C.read(ref, 0x5a, 11) do
+          co2 -> Map.put(m, :co2, co2)
+          _ -> Map.put(m, :sensor_failure, true)
+        end
+        Circuits.GPIO.close(gpio)
+      _ -> Map.put(m, :sensor_failure, true)
+    end
+
     Process.sleep(5000)                                                                 #SN
-    # %{temperature: Float.ceil(temp, 1), humidity: Float.ceil(humidity, 1), light: Float.ceil(light, 1), noise: noise, motion: (fn v -> if v == 0, do: false, else: true end).(motion), co2: co2, sensor_failure: failure}          #CO
     m
   end
 

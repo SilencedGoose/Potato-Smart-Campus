@@ -41,13 +41,8 @@ defmodule SmartCampusWeb.SmartCampusLive do
     measurement = Map.put(measurement, :datetime, measurement.inserted_at)                      #WI
     measurement = Map.drop(measurement, [:__meta__, :updated_at, :id, :inserted_at])            #WI
 
-    # status = Repo.one(from s in Status, order_by: [desc: s.inserted_at], limit: 1)            #DI
-    #   |> Map.from_struct                                                                      #WI
-    #   |> Enum.filter(fn {_, v} -> v != nil end)                                               #WI
-    #   |> Enum.into(%{})                                                                       #WI
-    # status = Map.put(status, :datetime, status.inserted_at)                                   #WI
-    # status = Map.drop(status, [:__meta__, :updated_at, :id, :inserted_at])                    #WI
-    status = Repo.get_by(Status, node_id: "alice@10.42.0.225")
+    status = Repo.get_by(SmartCampus.Status, node_id: "alice@10.42.0.225")
+      |> Map.from_struct
     status = Map.put(status, :datetime, status.inserted_at)
     status = Map.drop(status, [:__meta__, :updated_at, :id, :inserted_at])
 
