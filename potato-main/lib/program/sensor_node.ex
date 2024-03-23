@@ -55,9 +55,9 @@ defmodule SensorNode do
     m = case Circuits.GPIO.open("GPIO17", :input) do
       {:ok, gpio} ->
         case Circuits.GPIO.read(gpio) do
+          {_, _} -> Map.put(m, :sensor_failure, true)
           motion -> Circuits.GPIO.close(gpio)
             Map.put(m, :motion, (fn v -> if v == 0, do: false, else: true end).(motion))
-          _ -> Map.put(m, :sensor_failure, true)
         end
         
       _ -> Map.put(m, :sensor_failure, true)
@@ -66,8 +66,8 @@ defmodule SensorNode do
     m = case Circuits.I2C.open("i2c-1") do
       {:ok, ref} ->
         case Circuits.I2C.read(ref, 0x5a, 11) do
+          {_, _} -> Map.put(m, :sensor_failure, true)
           co2 -> Map.put(m, :co2, co2)
-          _ -> Map.put(m, :sensor_failure, true)
         end
       _ -> Map.put(m, :sensor_failure, true)
     end
