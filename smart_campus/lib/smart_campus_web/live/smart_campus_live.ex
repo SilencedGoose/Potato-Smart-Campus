@@ -3,6 +3,7 @@ defmodule SmartCampusWeb.SmartCampusLive do
   import Ecto.Query
   alias SmartCampus.Repo
   alias SmartCampus.Measurement
+  alias SmartCampus.Status
 
   def mount(_params, _session, socket) do
     if connected?(socket), do: Process.send_after(self(), :update_measurement, 1000)            #WI
@@ -39,9 +40,18 @@ defmodule SmartCampusWeb.SmartCampusLive do
       |> Enum.filter(fn {_, v} -> v != nil end)                                                 #WI
       |> Enum.into(%{})                                                                         #WI
     measurement = Map.put(measurement, :datetime, measurement.inserted_at)                      #WI
+
+    # Checks if data was lost (i.e. if the latest record was not uploaded to the database)
+    {_, previous_time} = DateTime.from_naive(measurement.inserted_at, "Etc/UTC")
+    if DateTime.diff(DateTime.utc_now(), previous_time) > 8 do
+      measurement = Map.put(measurement, :sensor_data_status, "Data Lost")
+    else
+      measurement = Map.put(measurement, :sensor_data_status, "Received")
+    end
+
     measurement = Map.drop(measurement, [:__meta__, :updated_at, :id, :inserted_at])            #WI
 
-    status = Repo.get_by(SmartCampus.Status, node_id: "alice@10.42.0.225")
+    status = Repo.get_by(Status, node_id: "alice@10.42.0.225")
       |> Map.from_struct
     status = Map.put(status, :datetime, status.inserted_at)
     status = Map.drop(status, [:__meta__, :updated_at, :id, :inserted_at])
