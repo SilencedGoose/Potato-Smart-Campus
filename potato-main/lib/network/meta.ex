@@ -9,6 +9,7 @@ defmodule Potato.Network.Meta do
   require Logger
   import GenServer
   alias Potato.Network.Meta
+  import Ecto.Query
 
   defstruct others: %{}, self: %{}
 
@@ -109,6 +110,11 @@ defmodule Potato.Network.Meta do
       Logger.debug("Remote ND for #{inspect(remote)}")
       new_state = %{state | others: Map.put(state.others, remote, map)}
       Potato.PubSub.call_all(:node_descriptors, {:added, remote, map})
+
+      # failure handling: software restarts
+      Ecto.Query.from(s in Status, where: s.node_id == ^to_string(remote), select: s)                     #DB
+      |> Repo.update_all(set: [updated_at: DateTime.utc_now(), sensor_node_software_status: "Working"])   #DB
+
       {:noreply, new_state}
     else
       Logger.warn("Remote ND was not valid: #{inspect(map)}")
