@@ -44,12 +44,12 @@ defmodule SmartCampusWeb.SmartCampusLive do
     # Checks if data was lost (i.e. if the latest record was not uploaded to the database)
     {_, previous_time} = DateTime.from_naive(measurement.inserted_at, "Etc/UTC")
     IO.inspect(DateTime.diff(DateTime.utc_now(), previous_time))
-    if DateTime.diff(DateTime.utc_now(), previous_time) > 8 do
-      measurement = Map.put(measurement, :sensor_data_status, "Data Lost")
+    measurement = if DateTime.diff(DateTime.utc_now(), previous_time) > 8 do
       IO.inspect("LOST")
+      Map.put(measurement, :sensor_data_status, "Data Lost")
     else
-      measurement = Map.put(measurement, :sensor_data_status, "Received")
       IO.inspect("RECEIVED")
+      Map.put(measurement, :sensor_data_status, "Received")
     end
 
     measurement = Map.drop(measurement, [:__meta__, :updated_at, :id, :inserted_at])            #WI
