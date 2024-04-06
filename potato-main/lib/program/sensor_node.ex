@@ -19,6 +19,9 @@ defmodule SensorNode do
 
   def run() do
     init()                                                                                #SN
+
+    Process.sleep(1000)
+    exit :kaboom
   end
 
   def read_measurement() do

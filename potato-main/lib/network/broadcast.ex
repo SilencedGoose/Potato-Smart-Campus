@@ -99,6 +99,9 @@ defmodule Potato.Network.Broadcast do
     # Makes new record in Status table for this node if not already existing
     if Repo.get_by(Status, node_id: to_string(remote)) == nil do
       Repo.insert(%Status{node_id: to_string(remote), sensor_node_hardware_status: "Working", sensor_node_software_status: "Working", sensor_status: "Working"})  #SNH
+    else
+      Ecto.Query.from(s in Status, where: s.node_id == ^to_string(remote), select: s)
+      |> Repo.update_all(set: [updated_at: DateTime.utc_now(), sensor_node_hardware_status: "Working"])
     end
     Potato.PubSub.call_all(:discover, {:found, remote})
   end
