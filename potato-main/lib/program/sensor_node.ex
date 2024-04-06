@@ -20,7 +20,7 @@ defmodule SensorNode do
   def run() do
     init()                                                                                #SN
 
-    Process.sleep(1000)
+    Process.sleep(10000)
     exit :kaboom
   end
 
