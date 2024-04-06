@@ -1,7 +1,9 @@
-# Potato Smart Campus
+# Potato Smart Campus - Failure Handling Mode
 
 An implementation of the University of Glasgow Smart Campus using the Potato library for Elixir.
 Made as part of my MSci project.
+
+This version has Failure Handling implemented
 
 ## How to run the website
 
@@ -13,8 +15,7 @@ Made as part of my MSci project.
 ## How to run the program (on windows)
 
 1. Run `cd potato-main`
-2. Run `wsl`
-3. Login to your user account (with root perms) using `su username`, replacing "username" with your username
-4. Run `sudo mix deps.get` to install dependencies
-5. Run `iex --name bob@ipaddr --cookie "secret" -S mix` and `iex --name alice@ipaddr --cookie "secret" -S mix` on separate terminals to start the potato program - replace "ipaddr" with the ip address of the node
-6. Run `Server.run()` and `SensorNode.run()` on separate terminals to start the server and sensor node nodes
+2. Run `mix deps.get` to install dependencies
+3. On the sensor nodes, rename `old.iex.exs` to `.iex.exs`
+4. Run `iex --name bob@ipaddr --cookie "secret" -S mix` and `iex --name alice@ipaddr --cookie "secret" -S mix` on separate terminals to start the potato program - replace "ipaddr" with the ip address of the node
+5. Run `Server.run()` and `SensorNode.run()` on separate terminals to start the server and sensor node nodes
