@@ -15,6 +15,7 @@ defmodule Potato.Network.Broadcast do
   use GenServer
   require Logger
   alias Potato.Network.Meta
+  import Ecto.Query
 
   @port 6666
   @multicast {224, 0, 0, 251}
@@ -86,13 +87,19 @@ defmodule Potato.Network.Broadcast do
 
   defp handle_disconnect(remote) do
     Logger.debug("LOST: #{inspect(remote)}")
-    # Repo.insert(%Status{node_id: inspect(remote), pi: false})   #SNH
+    # Update sensor node statuses in Status table for the node
+    Ecto.Query.from(s in Status, where: s.node_id == ^to_string(remote), select: s)
+      |> Repo.update_all(set: [updated_at: DateTime.utc_now(),
+        sensor_node_hardware_status: "Broken", sensor_node_software_status: "Crashed"])
     Potato.PubSub.call_all(:discover, {:lost, remote})
   end
 
   defp handle_connect(remote) do
     Logger.debug("DISCOVER: #{inspect(remote)}")
-    # Repo.insert(%Status{node_id: to_string(remote), sensor_node_hardware_status: "Working", sensor_node_software_status: "Working", sensor_status: "Working"})  #SNH
+    # Makes new record in Status table for this node if not already existing
+    if Repo.get_by(Status, node_id: to_string(remote)) == nil do
+      Repo.insert(%Status{node_id: to_string(remote), sensor_node_hardware_status: "Working", sensor_node_software_status: "Working", sensor_status: "Working"})  #SNH
+    end
     Potato.PubSub.call_all(:discover, {:found, remote})
   end
 

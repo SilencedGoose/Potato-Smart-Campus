@@ -7,31 +7,31 @@ defmodule SensorNode do
 
   def init() do
     # Our node descriptor.
-    nd = %{                                                                             #MN           
-      hardware: :raspberry_pi,                                                          #MN
-      type: :sensor_node,                                                               #MN
-      name: "sensor_node",                                                              #MN
-      uuid: ?a..?z |> Enum.shuffle() |> to_string                                       #MN
-    }                                                                                   #MN
+    nd = %{                                                                               #MN           
+      hardware: :raspberry_pi,                                                            #MN
+      type: :sensor_node,                                                                 #MN
+      name: "sensor_node",                                                                #MN
+      uuid: ?a..?z |> Enum.shuffle() |> to_string                                         #MN
+    }                                                                                     #MN
 
-    Potato.Network.Meta.set_local_nd(nd)                                                #MN
+    Potato.Network.Meta.set_local_nd(nd)                                                  #MN
   end
 
   def run() do
-    init()                                                                              #SN
+    init()                                                                                #SN
   end
 
   def read_measurement() do
-    m = %{temperature: nil, humidity: nil, light: nil, noise: nil, motion: nil, co2: nil, sensor_failure: false, node_id: to_string(node)}
+    m = %{temperature: nil, humidity: nil, light: nil, noise: nil, motion: nil, co2: nil, sensor_failure: false, node_id: to_string(node)}                                                             # 
 
     # temperature/humidity sensor
-    m = case ElixirALE.I2C.start_link("i2c-1", 0x45) do
-      {:ok, i2c_pid} ->
-        case SHT3x.single_shot_result(i2c_pid, :high, true) do
-        [{:ok, temp}, {:ok, humidity}] -> Map.merge(m, %{humidity: Float.ceil(humidity, 1), temperature: Float.ceil(temp, 1)})
-        _ -> Map.put(m, :sensor_failure, true)
+    m = case ElixirALE.I2C.start_link("i2c-1", 0x45) do                                   #
+      {:ok, i2c_pid} ->                                                                   #
+        case SHT3x.single_shot_result(i2c_pid, :high, true) do                            #
+        [{:ok, temp}, {:ok, humidity}] -> Map.merge(m, %{humidity: Float.ceil(humidity, 1), temperature: Float.ceil(temp, 1)})                                                                       #
+        _ -> Map.put(m, :sensor_failure, true)                                            #
       end
-      _ -> Map.put(m, :sensor_failure, true)
+      _ -> Map.put(m, :sensor_failure, true)                                              #
     end
     # light sensor
     m = case BH1750.start_link do
