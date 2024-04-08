@@ -9,7 +9,7 @@ defmodule SmartCampusWeb.SmartCampusLive do
     if connected?(socket), do: Process.send_after(self(), :update_measurement, 1000)            #WI
     # SmartCampusWeb.Endpoint.subscribe("new_measurement")
     IO.inspect(self())                                                                          #WI
-    {:ok, assign(socket, temperature: 0, humidity: 0, noise: 0, light: 0, motion: "Active", co2: 0, datetime: "17 Oct 2023 12:00:00", sensor_node_hardware_status: "Working", sensor_node_software_status: "Working", sensor_status: "Working", sensor_data_status: "Data Lost")}                                                            #WI
+    {:ok, assign(socket, temperature: 0, humidity: 0, noise: 0, light: 0, motion: "Active", co2: 0, datetime: "17 Oct 2023 12:00:00", sensor_node_hardware_status: "Working", sensor_node_software_status: "Working", sensor_status: "Working", sensor_data_status: "Data Lost")}                                                #WI
   end
 
   def render(assigns) do                                                                        #WI "lines: 18"
@@ -41,22 +41,23 @@ defmodule SmartCampusWeb.SmartCampusLive do
       |> Enum.into(%{})                                                                         #WI
     measurement = Map.put(measurement, :datetime, measurement.inserted_at)                      #WI
 
-    # Checks if data was lost (i.e. if the latest record was not uploaded to the database)
-    {_, previous_time} = DateTime.from_naive(measurement.inserted_at, "Etc/UTC")
-    measurement = if DateTime.diff(DateTime.utc_now(), previous_time) > 8 do
-      Map.put(measurement, :sensor_data_status, "Data Lost")
-    else
-      Map.put(measurement, :sensor_data_status, "Received")
+    # Checks if data was lost (i.e. if the latest record was not uploaded to the database)      
+    {_, previous_time} = DateTime.from_naive(measurement.inserted_at, "Etc/UTC")                #LD
+    measurement = if DateTime.diff(DateTime.utc_now(), previous_time) > 8 do                    #LD
+      Map.put(measurement, :sensor_data_status, "Data Lost")                                    #LD
+    else                                                                                        #LD
+      Map.put(measurement, :sensor_data_status, "Received")                                     #LD
     end
 
     measurement = Map.drop(measurement, [:__meta__, :updated_at, :id, :inserted_at])            #WI
 
-    status = Repo.get_by(Status, node_id: "alice@10.42.0.225")
-      |> Map.from_struct
-    status = Map.put(status, :datetime, status.inserted_at)
-    status = Map.drop(status, [:__meta__, :updated_at, :id, :inserted_at])
+    #get statuses to be displayed
+    status = Repo.get_by(Status, node_id: "alice@10.42.0.225")                                  #DI
+      |> Map.from_struct                                                                        #WI
+    status = Map.put(status, :datetime, status.inserted_at)                                     #WI
+    status = Map.drop(status, [:__meta__, :updated_at, :id, :inserted_at])                      #WI
 
-    data = Map.merge(measurement, status)
-    {:noreply, assign(socket, data)}                                                     #WI
+    data = Map.merge(measurement, status)                                                       #WI (general FH?)
+    {:noreply, assign(socket, data)}                                                            #WI
   end
 end
