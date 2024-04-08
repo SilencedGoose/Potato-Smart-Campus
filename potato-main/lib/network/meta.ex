@@ -112,8 +112,8 @@ defmodule Potato.Network.Meta do
       Potato.PubSub.call_all(:node_descriptors, {:added, remote, map})
 
       # failure handling: software restarts
-      Ecto.Query.from(s in Status, where: s.node_id == ^to_string(remote), select: s)                     #DB
-      |> Repo.update_all(set: [updated_at: DateTime.utc_now(), sensor_node_software_status: "Working"])   #DB
+      Ecto.Query.from(s in Status, where: s.node_id == ^to_string(remote), select: s)                     #DI
+      |> Repo.update_all(set: [updated_at: DateTime.utc_now(), sensor_node_software_status: "Working"])   #DI
 
       {:noreply, new_state}
     else

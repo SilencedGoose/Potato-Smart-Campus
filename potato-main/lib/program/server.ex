@@ -46,13 +46,13 @@ defmodule Server do
     src
     ~> map(fn v ->
       # updating Status table
-      Ecto.Query.from(s in Status, where: s.node_id == ^v.node_id, select: s)                               #DB
-        |> Repo.update_all(set: [updated_at: DateTime.utc_now(),                                            #DB
-          sensor_status: (fn x -> if x == true, do: "Broken", else: "Working" end).(v.sensor_failure)])     #DB
+      Ecto.Query.from(s in Status, where: s.node_id == ^v.node_id, select: s)                               #DI
+        |> Repo.update_all(set: [updated_at: DateTime.utc_now(),                                            #DI
+          sensor_status: (fn x -> if x == true, do: "Broken", else: "Working" end).(v.sensor_failure)])     #DI
       # updating Measurements table
-      Repo.insert(%Measurement{temperature: v.temperature, humidity: v.humidity, light: v.light, motion: v.motion, noise: v.noise, co2: v.co2})                                                                          #DB
+      Repo.insert(%Measurement{temperature: v.temperature, humidity: v.humidity, light: v.light, motion: v.motion, noise: v.noise, co2: v.co2})                                                                          #DI
     end)
-    ~> snk
+    ~> snk                                                                                                  #CO
   end
 
   def run() do

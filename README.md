@@ -16,6 +16,6 @@ This version has Failure Handling implemented
 
 1. Run `cd potato-main`
 2. Run `mix deps.get` to install dependencies
-3. On the sensor nodes, rename `old.iex.exs` to `.iex.exs`
+3. On the sensor nodes, rename `hide.iex.exs` to `.iex.exs`
 4. Run `iex --name bob@ipaddr --cookie "secret" -S mix` and `iex --name alice@ipaddr --cookie "secret" -S mix` on separate terminals to start the potato program - replace "ipaddr" with the ip address of the node
 5. Run `Server.run()` and `SensorNode.run()` on separate terminals to start the server and sensor node nodes
