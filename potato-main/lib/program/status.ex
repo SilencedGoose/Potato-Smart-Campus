@@ -1,4 +1,4 @@
-defmodule SmartCampus.Status do
+defmodule Status do
   use Ecto.Schema
   import Ecto.Changeset
 
